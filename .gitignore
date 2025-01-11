@@ -1,0 +1,29 @@
+# local test
+README_dev.md
+docker-compose.override.yml
+
+# env
+.env                         # env
+.venv/                       # Python virtualenv
+
+# Docker
+*.pid                        # Docker pid file
+*.log                        # log file
+
+# Python
+__pycache__/                 # Python 캐시 파일
+*.pyc
+*.sqlite3                    # SQLite db
+*.db
+
+# node js
+node_modules/
+.npm/
+*.log
+# next js
+.next/
+out/
+coverage/
+config.json
+keys.json
+secret.key
