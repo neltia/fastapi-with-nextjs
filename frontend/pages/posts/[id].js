@@ -1,8 +1,23 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
 import Layout from "../../components/Layout";
-import { fetchPostById, fetchPosts } from "../../utils/api";
+import { deletePost, fetchPostById, fetchPosts } from "../../utils/api";
 
 export default function Post({ post, posts }) {
+  const router = useRouter();
+
+  const handleDelete = async () => {
+    if (confirm("정말로 삭제하시겠습니까?")) {
+      try {
+        await deletePost(post.id);
+        alert("게시글이 삭제되었습니다.");
+        router.push("/posts");
+      } catch (error) {
+        console.error("삭제 중 오류가 발생했습니다:", error);
+      }
+    }
+  };
+
   return (
     <Layout>
       <div className="flex flex-col md:flex-row gap-6">
@@ -48,19 +63,30 @@ export default function Post({ post, posts }) {
         </aside>
 
         {/* 메인 콘텐츠 */}
-        <section className="flex-1 bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
-          <h1 className="text-3xl font-bold text-blue-600 dark:text-blue-400">
+        <section className="flex-1 bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 relative">
+          <h1 className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-4">
             {post.title}
           </h1>
+
+          {/* 버튼 섹션 */}
+          <div className="flex justify-end gap-2 mb-6">
+            <Link
+              href={`/posts/edit/${post.id}`}
+              className="px-3 py-1 bg-yellow-500 text-white dark:bg-yellow-600 dark:text-gray-200 rounded shadow hover:bg-yellow-600 dark:hover:bg-yellow-700 text-sm focus:outline-none"
+            >
+              수정
+            </Link>
+            <button
+              onClick={handleDelete}
+              className="px-3 py-1 bg-red-500 text-white dark:bg-red-600 dark:text-gray-200 rounded shadow hover:bg-red-600 dark:hover:bg-red-700 text-sm focus:outline-none"
+            >
+              삭제
+            </button>
+          </div>
+
           <p className="mt-6 text-gray-700 dark:text-gray-300 leading-relaxed">
             {post.content}
           </p>
-          <a
-            href="/posts"
-            className="inline-block mt-8 px-4 py-2 bg-blue-500 text-white dark:bg-blue-600 dark:text-gray-200 rounded-md shadow hover:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300"
-          >
-            목록으로 돌아가기
-          </a>
         </section>
 
         {/* 우측 사이드바 */}

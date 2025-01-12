@@ -23,4 +23,14 @@ export const fetchPostById = async (id) => {
 export const createPost = async (postData) => {
     const response = await axios.post(`${API_URL}/posts/`, postData);
     return response.data;
-  };
+};
+
+export const updatePost = async (id, postData) => {
+    const response = await axios.put(`${API_URL}/posts/${id}`, postData);
+    return response.data;
+};
+
+export const deletePost = async (id) => {
+    const response = await axios.delete(`${API_URL}/posts/${id}`);
+    return response.data;
+};

@@ -18,6 +18,7 @@ app.add_middleware(
 )
 
 
+# get db: SQLite3
 def get_db():
     db = SessionLocal()
     try:
@@ -26,11 +27,19 @@ def get_db():
         db.close()
 
 
+# create post
+@app.post("/posts/", response_model=schemas.Post)
+def create_post(post: schemas.PostCreate, db: Session = Depends(get_db)):
+    return crud.create_post(db, post)
+
+
+# get post list
 @app.get("/posts/", response_model=list[schemas.Post])
 def read_posts(db: Session = Depends(get_db)):
     return crud.get_posts(db)
 
 
+# get post by post id
 @app.get("/posts/{post_id}", response_model=schemas.Post)
 def read_post(post_id: int, db: Session = Depends(get_db)):
     post = crud.get_post_by_id(db, post_id)
@@ -39,6 +48,19 @@ def read_post(post_id: int, db: Session = Depends(get_db)):
     return post
 
 
-@app.post("/posts/", response_model=schemas.Post)
-def create_post(post: schemas.PostCreate, db: Session = Depends(get_db)):
-    return crud.create_post(db, post)
+# 게시글 수정 API
+@app.put("/posts/{post_id}", response_model=schemas.Post)
+def update_post(post_id: int, post_update: schemas.PostUpdate, db: Session = Depends(get_db)):
+    post = crud.update_post(db, post_id, post_update)
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found")
+    return post
+
+
+# 게시글 삭제 API
+@app.delete("/posts/{post_id}", response_model=schemas.Post)
+def delete_post(post_id: int, db: Session = Depends(get_db)):
+    post = crud.delete_post(db, post_id)
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found")
+    return post

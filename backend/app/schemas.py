@@ -7,11 +7,14 @@ class PostBase(BaseModel):
     content: str
 
 
+class Post(PostBase):
+    id: int
+    model_config = ConfigDict(from_attributes=True)
+
+
 class PostCreate(PostBase):
     pass
 
 
-class Post(PostBase):
-    id: int
-
-    model_config = ConfigDict(from_attributes=True)
+class PostUpdate(PostBase):
+    pass
